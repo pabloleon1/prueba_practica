@@ -1,0 +1,98 @@
+CÓDIGO 1: Validación en el controlador
+(Para cuando el usuario envía el formulario)
+
+
+// Dentro del método store() o update() del controlador correspondiente
+// Ejemplo para ProyectoController
+
+public function store(Request $request)
+{
+    $request->validate([
+        'nombre' => 'required|min:3',
+        'descripcion' => 'required|max:255',
+    ]);
+
+    Proyecto::create([
+        'nombre' => $request->nombre,
+        'descripcion' => $request->descripcion
+    ]);
+
+    return redirect()->back()->with('success', 'Proyecto creado correctamente');
+}
+
+
+Dónde va:
+En: app/Http/Controllers/ProyectoController.php
+Este bloque valida los datos del formulario antes de guardarlos. Puedes copiarlo también en otros controladores (como TareaController o UsuarioController) y cambiar los nombres de campos según corresponda.
+
+CÓDIGO 2: Mostrar errores generales
+(Muestra todos los errores si hay campos vacíos o mal ingresados)
+
+
+<!-- Mostrar errores generales -->
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <strong>Revisa los siguientes errores:</strong>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
+Dónde va:
+En la vista del formulario:
+resources/views/proyectos/create.blade.php
+o
+resources/views/tareas/create.blade.php
+Este bloque va antes del <form> para mostrar los errores de validación.
+
+CÓDIGO 3: Mostrar mensajes de éxito
+(Después de guardar los datos correctamente)
+
+
+<!-- Mostrar mensaje de éxito -->
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+
+Dónde va:
+Justo debajo del bloque de errores en la misma vista create.blade.php
+Esto muestra un mensaje verde si se guardó todo bien.
+
+CÓDIGO 4: Validación específica por campo
+(Cada campo muestra su error debajo, y mantiene el valor anterior si falló)
+
+
+<form action="{{ route('proyectos.store') }}" method="POST">
+    @csrf
+
+    <div class="mb-3">
+        <label>Nombre del proyecto</label>
+        <input type="text" name="nombre" class="form-control" value="{{ old('nombre') }}">
+        @error('nombre')
+            <small class="text-danger">{{ $message }}</small>
+        @enderror
+    </div>
+
+    <div class="mb-3">
+        <label>Descripción</label>
+        <textarea name="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
+        @error('descripcion')
+            <small class="text-danger">{{ $message }}</small>
+        @enderror
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+
+
+Dónde va:
+Dentro del archivo Blade de la vista del formulario correspondiente:
+resources/views/proyectos/create.blade.php
+Este ejemplo es para proyectos, pero puedes usar la misma estructura para tareas o usuarios (cambiando los campos).
