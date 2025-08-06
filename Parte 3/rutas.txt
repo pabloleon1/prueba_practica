@@ -1,9 +1,0 @@
-use App\Http\Controllers\TaskController;
-
-Route::prefix('tareas')->group(function () {
-    Route::get('/', [TaskController::class, 'index'])->name('tareas.index');
-    Route::get('/crear', [TaskController::class, 'create'])->name('tareas.create');
-    Route::post('/', [TaskController::class, 'store'])->name('tareas.store');
-    Route::get('/{id}/editar', [TaskController::class, 'edit'])->name('tareas.edit');
-    Route::put('/{id}', [TaskController::class, 'update'])->name('tareas.update');
-});
